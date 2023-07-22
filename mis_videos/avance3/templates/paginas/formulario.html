@@ -1,0 +1,71 @@
+{% extends "base.html"%}
+
+<title>{% block titulo %} formulario {% endblock %}</title>
+
+{% block contenido %}
+
+
+
+<h2>REGISTRATE y SUBE TUS VIDEOS</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.usuario_id.label_tag }}
+    <br>
+    {{ form.usuario_id }}
+    <br>
+    {{ form.usuario_nombre.label_tag }}
+    <br>
+    {{ form.usuario_nombre }}
+    <br>
+    <label for="num_videos">Número de videos a subir:</label>
+    <br>
+    <input type="number" id="num_videos" name="num_videos" min="1">
+    <br>
+    <div id="videosContainer">
+        {% if form.video_tamaño.errors %}
+        <div style="color:red">{{ form.video_tamaño.errors }}
+        </div>
+        {% endif %}
+
+        <!-- Aquí se agregarán los campos de los videos -->
+    </div>
+
+    <br>
+    <button type="submit">Subir</button>
+</form>
+
+
+<script>
+    function addVideoFields(numVideos) {
+        const videosContainer = document.getElementById('videosContainer');
+        videosContainer.innerHTML = ''; // Limpiamos el contenido anterior
+
+        for (let i = 1; i <= numVideos; i++) {
+            const videoDiv = document.createElement('div'); videoDiv.innerHTML = ` <br>
+            <p>Datos video${i}:</p>
+            {{ form.video_nombre.label_tag }}
+        <br>
+        {{ form.video_nombre }}
+        <br>
+        {{ form.video_extension.label_tag }}
+        <br>
+        {{ form.video_extension }}
+        <br>
+        {{ form.video_tamaño.label_tag }}
+        <br>
+        {{ form.video_tamaño }}
+            <br>
+            `;
+
+            videosContainer.appendChild(videoDiv);
+        }
+    }
+    // Event listener para actualizar los campos de los videos al cambiar el número
+    document.getElementById('num_videos').addEventListener('input', function () {
+        const numVideos = parseInt(this.value);
+        if (!isNaN(numVideos) && numVideos >= 1) {
+            addVideoFields(numVideos);
+        }
+    });
+</script>
+{% endblock%}
